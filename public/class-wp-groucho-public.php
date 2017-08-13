@@ -102,10 +102,27 @@ class WP_Groucho_Public {
 
 	public function hello_groucho() {
 		if( is_single() ) {
-		?>
-			<meta name="wp_groucho" content="<?php echo("Hello World") ?>" />
-		<?php
-		}
-	}
+			$taxonomy = array();
+			$postCategories = get_the_category();
+			if ( $postCategories ) {
 
+				$taxCats = array(); //obj to push add on to taxonomies obj
+
+				foreach( $postCategories as $cat ) {
+
+					$taxCats[$cat->term_id] = $cat->slug;
+				}
+
+				$taxonomy["categories"] = $taxCats;
+				?>
+				<!--Begin Groucho data-->
+				<script type="text/javascript">
+						var dataLayer=dataLayer||[];
+						dataLayer.push({'taxonomy': <?php echo(json_encode($taxonomy)); ?>});
+				</script>
+				<!--End Groucho data-->
+				<?php
+			} // categories exist
+		} // is single
+	} // hello
 }

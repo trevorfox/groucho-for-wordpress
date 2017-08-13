@@ -149,7 +149,7 @@ class WP_Groucho {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new WP_Groucho_Admin( $this->get_wp_groucho(), $this->get_version() );
+		//$plugin_admin = new WP_Groucho_Admin( $this->get_wp_groucho(), $this->get_version() );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
@@ -167,8 +167,8 @@ class WP_Groucho {
 
 		$plugin_public = new WP_Groucho_Public( $this->get_wp_groucho(), $this->get_version() );
 
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+		//$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
+		//$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 		$this->loader->add_action( 'wp_head', $plugin_public, 'hello_groucho' );
 
 	}
