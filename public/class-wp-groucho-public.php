@@ -95,34 +95,49 @@ class WP_Groucho_Public {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-
-		wp_enqueue_script( $this->wp_groucho, plugin_dir_url( __FILE__ ) . 'js/wp-groucho-public.js', array( 'jquery' ), $this->version, false );
-
+		// below function call is for demo only
+		//wp_enqueue_script( $this->wp_groucho, plugin_dir_url( __FILE__ ) . 'js/wp-groucho-public.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( 'json2', plugin_dir_url( __FILE__ ) . 'js/json2.js');
+		wp_enqueue_script( 'jquery', plugin_dir_url( __FILE__ ) . 'js/jquery.js');
+		wp_enqueue_script( 'dataLayerHelper', plugin_dir_url( __FILE__ ) . 'js/data-layer-helper.js');
+		wp_enqueue_script( 'jStorage', plugin_dir_url( __FILE__ ) . 'js/jstorage.js'); //array('jquery'));
+		wp_enqueue_script( 'groucho', plugin_dir_url( __FILE__ ) . 'js/groucho.js');// array('jquery','jStorate','dataLayerHelper'));
 	}
 
 	public function hello_groucho() {
 		if( is_single() ) {
 			$taxonomy = array();
+
 			$postCategories = get_the_category();
 			if ( $postCategories ) {
-
-				$taxCats = array(); //obj to push add on to taxonomies obj
-
+				$taxCats = array();
 				foreach( $postCategories as $cat ) {
-
 					$taxCats[$cat->term_id] = $cat->slug;
 				}
-
 				$taxonomy["categories"] = $taxCats;
-				?>
-				<!--Begin Groucho data-->
-				<script type="text/javascript">
-						var dataLayer=dataLayer||[];
-						dataLayer.push({'taxonomy': <?php echo(json_encode($taxonomy)); ?>});
-				</script>
-				<!--End Groucho data-->
-				<?php
-			} // categories exist
+			}
+
+			?>
+			<!--Begin Groucho data-->
+			<script type="text/javascript">
+
+					var dataLayer = dataLayer||[];
+					var groucho = window.groucho || {};
+					groucho.config = {
+					  'taxonomyProperty' : 'grouchoTaxonomy',
+					  'trackExtent' : 50,
+					  'favThreshold' : 1,
+					  'trackProperties' : [
+					    'grouchoTaxonomy',
+					    'authorId',
+					    'tags',
+							'categories'
+					  ]
+					}
+					dataLayer.push({'grouchoTaxonomy': <?php echo(json_encode($taxonomy)); ?>});
+			</script>
+			<!--End Groucho data-->
+			<?php
 		} // is single
 	} // hello
 }
