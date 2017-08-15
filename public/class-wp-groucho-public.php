@@ -105,7 +105,7 @@ class WP_Groucho_Public {
 	}
 
 	public function hello_groucho() {
-		if( is_single() ) {
+		if( is_singular() ) {
 			$taxonomy = array();
 
 			$postCategories = get_the_category();
