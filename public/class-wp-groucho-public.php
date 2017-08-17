@@ -103,20 +103,32 @@ class WP_Groucho_Public {
 		wp_enqueue_script( 'jStorage', plugin_dir_url( __FILE__ ) . 'js/jstorage.js'); //array('jquery'));
 		wp_enqueue_script( 'groucho', plugin_dir_url( __FILE__ ) . 'js/groucho.js');// array('jquery','jStorate','dataLayerHelper'));
 	}
+	
+	private function format_taxonomy_terms($post_taxonomy_terms){
+		$groucho_taxonomy_terms = array();
+			foreach( $post_taxonomy_terms as $term ) {
+				$groucho_taxonomy_terms[$term->term_id] = $term->slug;
+			}
+		return $groucho_taxonomy_terms;
+	}
+
+	private function make_groucho_taxonomy() {
+		$post_taxonomies = get_taxonomies();
+		$post_id = get_the_ID();
+		$groucho_taxonomy = array();
+		foreach ( $post_taxonomies as $taxonomy ) {
+			$post_taxonomy_terms = get_the_terms($post_id,$taxonomy); // list of term objects
+			if ($post_taxonomy_terms) {
+				// add formatted taxonomy to assoc. array with named taxonomy assoc. arrays
+				$groucho_taxonomy[$taxonomy] = $this->format_taxonomy_terms($post_taxonomy_terms);
+			}
+		}
+		return $groucho_taxonomy;
+	}
 
 	public function hello_groucho() {
 		if( is_singular() ) {
-			$taxonomy = array();
-
-			$postCategories = get_the_category();
-			if ( $postCategories ) {
-				$taxCats = array();
-				foreach( $postCategories as $cat ) {
-					$taxCats[$cat->term_id] = $cat->slug;
-				}
-				$taxonomy["categories"] = $taxCats;
-			}
-
+			$taxonomy = $this->make_groucho_taxonomy();
 			?>
 			<!--Begin Groucho data-->
 			<script type="text/javascript">
@@ -129,8 +141,8 @@ class WP_Groucho_Public {
 					  'favThreshold' : 1,
 					  'trackProperties' : [
 					    'grouchoTaxonomy',
-					    'authorId',
-					    'tags',
+					    'pagePostauthor',
+					    'post_tag',
 							'categories'
 					  ]
 					}
@@ -140,4 +152,4 @@ class WP_Groucho_Public {
 			<?php
 		} // is single
 	} // hello
-}
+} // class
